@@ -105,7 +105,8 @@ class HttpTarget {
         }
         // variables json included in body
         if (variablesOffset > 0 && variablesOffsetEnd > variablesOffset) {
-            doc["query"] = this.bodyLines.slice(0, variablesOffset).join(LINE_TERMINATOR);
+            let query = this.bodyLines.slice(0, variablesOffset).join(LINE_TERMINATOR);
+            doc["query"] = query.replaceAll("`", "\\`");
             doc["variables"] = JSON.parse(this.bodyLines.slice(variablesOffset, variablesOffsetEnd + 1).join(LINE_TERMINATOR));
         } else { // query only
             doc["query"] = this.body;
