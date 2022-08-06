@@ -44,6 +44,8 @@ console.log(await response.json());
 
 # esbuild example
 
+`build.js` as following:
+
 ```javascript
 const esbuild = require('esbuild');
 
@@ -60,6 +62,23 @@ esbuild.build({
 }).then(result => {
     console.log(result.outputFiles[0].text);
 }).catch(() => process.exit(1));
+```
+
+# Framework Integration
+
+* [tsup](https://tsup.egoist.dev/): `tsup.config.ts` code as following:
+
+```typescript
+import {defineConfig} from 'tsup'
+import httpfilePlugin from "esbuild-plugin-httpfile";
+
+export default defineConfig({
+    target: 'node18',
+    platform: 'node',
+    format: "esm",
+    outDir: "dist",
+    esbuildPlugins: [httpfilePlugin()]
+})
 ```
 
 # References
