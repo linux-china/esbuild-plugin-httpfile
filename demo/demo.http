@@ -12,5 +12,27 @@ Content-Type: application/json
 {
   "name": "{{nick}}",
   "age": 42,
-  "uuid": "{{$uuid}}"
+  "uuid": "{{$uuid}}",
+  "demo": "hi` morning"
+}
+
+### GraphQL simple
+//@name graphql-simple
+GRAPHQL https://httpbin.org/post
+
+query {
+    ip
+}
+
+### GraphQL demo with variables
+//@name graphql-demo
+GRAPHQL https://httpbin.org/post
+
+query {
+    ip
+}
+
+{
+  "id": 1,
+  "name": "hi` morning"
 }
