@@ -1,5 +1,15 @@
 const LINE_TERMINATOR = "\n";
 
+
+function jsonStringify(obj) {
+    if (obj === null) {
+        return "{}";
+    }
+    return JSON.stringify(obj, (key, value) => {
+        if (value !== null) return value
+    });
+}
+
 class HttpTarget {
 
     constructor(index) {
@@ -11,6 +21,7 @@ class HttpTarget {
         this.url = "";
         this.headers = undefined;
         this.body = undefined;
+        this.bodyLines = undefined;
         this.script = undefined;
         this.variables = [];
     }
@@ -25,6 +36,7 @@ class HttpTarget {
         }
         if (this.body) {
             this.body = this.replaceVariables(this.body.trimEnd());
+            this.body = this.body.replaceAll("`", "\\`");
         }
         if (this.name === undefined) {
             this.name = "http" + this.index;
@@ -51,8 +63,10 @@ class HttpTarget {
     addBodyLine(line) {
         if (!this.body) {
             this.body = line;
+            this.bodyLines = [line];
         } else {
             this.body = this.body + LINE_TERMINATOR + line;
+            this.bodyLines.push(line);
         }
     }
 
@@ -77,26 +91,68 @@ class HttpTarget {
         return newText;
     }
 
-    toCode() {
-        let params_name = "params";
-        if (this.variables.length === 0) {
-            params_name = "";
+    extractGraphqlDoc() {
+        let doc = {};
+        let variablesOffset = -1;
+        let variablesOffsetEnd = -1;
+        for (let i = 0; i < this.bodyLines.length; i++) {
+            let line = this.bodyLines[i].trim();
+            if (line === "{") {
+                variablesOffset = i;
+            } else if (line === "}") {
+                variablesOffsetEnd = i;
+            }
         }
-        if (this.body) {
-            return "export async function " + this.name + "(" + params_name + ") {\n" +
+        // variables json included in body
+        if (variablesOffset > 0 && variablesOffsetEnd > variablesOffset) {
+            doc["query"] = this.bodyLines.slice(0, variablesOffset).join(LINE_TERMINATOR);
+            doc["variables"] = JSON.parse(this.bodyLines.slice(variablesOffset, variablesOffsetEnd + 1).join(LINE_TERMINATOR));
+        } else { // query only
+            doc["query"] = this.body;
+        }
+        return doc;
+    }
+
+    toCode() {
+        let functionParamNames = [];
+        if (this.variables.length > 0) {
+            functionParamNames.push("params");
+        }
+        if (this.method === "GRAPHQL") {
+            let headers = this.headers ?? {}
+            headers["Content-Type"] = "application/json"
+            let doc = this.extractGraphqlDoc();
+            let query = doc['query'];
+            let variablesDecl = "";
+            if (doc['variables']) {
+                functionParamNames.push("variables");
+                variablesDecl = "variables: {..." + jsonStringify(doc['variables']) + ", ...(variables??{})},";
+            }
+            return "export async function " + this.name + "(" + functionParamNames.join(",") + ") {\n" +
+                "    let doc = {" + variablesDecl + " query: `" + query + "`};\n" +
                 "    return await fetch(`" + this.url + "`, {\n" +
-                "        method: '" + this.method + "',\n" +
-                "        headers: " + JSON.stringify(this.headers ?? {}) + ",\n" +
-                "        body: `" + this.body + "`" +
+                "        method: 'POST',\n" +
+                "        headers: " + jsonStringify(headers) + ",\n" +
+                "        body: JSON.stringify(doc) \n" +
                 "    });\n" +
                 "}";
-        } else {
-            return "export async function " + this.name + "(" + params_name + ") {\n" +
-                "    return await fetch(`" + this.url + "`, {\n" +
-                "        method: '" + this.method + "',\n" +
-                "        headers: " + JSON.stringify(this.headers ?? {}) + "\n" +
-                "    });\n" +
-                "}"
+        } else if (this.method === "POST" || this.method === "GET") {
+            if (this.body) {
+                return "export async function " + this.name + "(" + functionParamNames.join(",") + ") {\n" +
+                    "    return await fetch(`" + this.url + "`, {\n" +
+                    "        method: '" + this.method + "',\n" +
+                    "        headers: " + jsonStringify(this.headers) + ",\n" +
+                    "        body: `" + this.body + "`" +
+                    "    });\n" +
+                    "}";
+            } else {
+                return "export async function " + this.name + "(" + functionParamNames.join(",") + ") {\n" +
+                    "    return await fetch(`" + this.url + "`, {\n" +
+                    "        method: '" + this.method + "',\n" +
+                    "        headers: " + jsonStringify(this.headers) + "\n" +
+                    "    });\n" +
+                    "}"
+            }
         }
     }
 }
@@ -136,7 +192,7 @@ function parseHttpfile(text) {
             } else if (!httpTarget.comment) {
                 httpTarget.comment = line.substring(2).trim();
             }
-        } else if ((line.startsWith("GET ") || line.startsWith("POST ") || line.startsWith("PUT ") || line.startsWith("DELETE "))
+        } else if ((line.startsWith("GET ") || line.startsWith("POST ") || line.startsWith("PUT ") || line.startsWith("DELETE ") || line.startsWith("GRAPHQL "))
             && httpTarget.method === "") { // HTTP method & URL
             const parts = line.split(" ", 3); // format as 'POST URL HTTP/1.1'
             httpTarget.method = parts[0];
