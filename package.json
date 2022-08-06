@@ -4,8 +4,8 @@
   "description": "esbuild plugin for http file",
   "main": "index.js",
   "scripts": {
-    "test": "cd test; node build.js; node bundle.mjs",
-    "bundle": "cd test; node build.js"
+    "test": "cd demo; node build.js; node bundle.mjs",
+    "bundle": "cd demo; node build.js"
   },
   "keywords": [
     "esbuild",
