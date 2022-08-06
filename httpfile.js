@@ -114,6 +114,38 @@ class HttpTarget {
         return doc;
     }
 
+    toApiDeclare() {
+        if (this.method === "GRAPHQL") {
+            let signatures = [];
+            if (this.variables.length > 0) {
+                let paramsSignature = "params: {" + this.variables.map(v => {
+                    return v + ": string"
+                }).join(", ") + "}";
+                signatures.push(paramsSignature);
+            }
+            let doc = this.extractGraphqlDoc();
+            if (doc.variables) {
+                let graphqlVariableNames = Object.keys(doc.variables);
+                if (graphqlVariableNames.length > 0) {
+                    let variablesSignature = "variables: {" + graphqlVariableNames.map(v => {
+                        return v + ": string"
+                    }).join(", ") + "}";
+                    signatures.push(variablesSignature);
+                }
+            }
+            return "export function " + this.name + "(" + signatures.join(", ") + "): Promise<Response>;"
+        } else { //HTTP request
+            if (this.variables.length === 0) {
+                return "export function " + this.name + "(): Promise<Response>;"
+            } else {
+                let paramsSignature = "params: {" + this.variables.map(v => {
+                    return v + ": string"
+                }).join(", ") + "}";
+                return "export function " + this.name + "(" + paramsSignature + "): Promise<Response>;"
+            }
+        }
+    }
+
     toCode() {
         let functionParamNames = [];
         if (this.variables.length > 0) {
