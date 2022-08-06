@@ -1,0 +1,23 @@
+{
+  "name": "esbuild-plugin-httpfile",
+  "version": "0.1.0",
+  "description": "esbuild plugin for http file",
+  "main": "index.js",
+  "scripts": {
+    "test": "cd test; node build.js; node bundle.mjs",
+    "bundle": "cd test; node build.js"
+  },
+  "keywords": [
+    "esbuild",
+    "httpfile"
+  ],
+  "author": "linux_china <libing.chen@gmail.com>",
+  "repository": "https://github.com/linux-china/esbuild-plugin-httpfile",
+  "license": "ISC",
+  "dependencies": {
+    "esbuild": "^0.14.53"
+  },
+  "volta": {
+    "node": "18.7.0"
+  }
+}
