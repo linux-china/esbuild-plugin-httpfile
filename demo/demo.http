@@ -1,0 +1,16 @@
+### get my ip
+//@name my-ip
+GET https://httpbin.org/ip
+User-Agent: curl/7.47.0
+
+### post test
+//@name post-test
+POST https://{{host}}/post
+User-Agent: curl/7.47.0
+Content-Type: application/json
+
+{
+  "name": "{{nick}}",
+  "age": 42,
+  "uuid": "{{$uuid}}"
+}
