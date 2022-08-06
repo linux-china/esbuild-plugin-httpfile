@@ -25,6 +25,14 @@ Content-Type: application/json
 }
 ```
 
+* Add `esbuild-plugin-httpfile` to your project's `package.json` or `npm add -D esbuild-plugin-httpfile`.
+
+```
+ "dependencies": {
+    "esbuild-plugin-httpfile": "^0.1.0"
+  }
+```
+
 * In JavaScript/TypeScript file, such as `hello.mjs`, and you can import http file directly. Code as following:
 
 ```javascript
