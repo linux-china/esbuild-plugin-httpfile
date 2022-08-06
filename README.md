@@ -29,7 +29,7 @@ Content-Type: application/json
 
 ```
  "dependencies": {
-    "esbuild-plugin-httpfile": "^0.1.0"
+    "esbuild-plugin-httpfile": "^0.2.0"
   }
 ```
 
