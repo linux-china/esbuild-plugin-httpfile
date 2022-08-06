@@ -1,10 +1,10 @@
 ### get my ip
-//@name my-ip
+//@name myIp
 GET https://httpbin.org/ip
 User-Agent: curl/7.47.0
 
 ### post test
-//@name post-test
+//@name postTest
 POST https://{{host}}/post
 User-Agent: curl/7.47.0
 Content-Type: application/json
@@ -17,7 +17,7 @@ Content-Type: application/json
 }
 
 ### GraphQL simple
-//@name graphql-simple
+//@name graphqlSimple
 GRAPHQL https://httpbin.org/post
 
 query {
@@ -25,7 +25,7 @@ query {
 }
 
 ### GraphQL demo with variables
-//@name graphql-demo
+//@name graphqlDemo
 GRAPHQL https://httpbin.org/post
 
 query {
