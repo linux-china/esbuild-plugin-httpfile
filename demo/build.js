@@ -5,7 +5,7 @@ const httpfilePlugin = require('../index');
 esbuild.build({
     bundle: true,
     entryPoints: ['hello.mjs'],
-    plugins: [httpfilePlugin],
+    plugins: [httpfilePlugin(true)],
     platform: 'node',
     format: "esm",
     write: true,
