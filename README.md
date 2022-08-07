@@ -63,6 +63,18 @@ esbuild.build({
 }).catch(() => process.exit(1));
 ```
 
+# Mock Support
+
+You can mock request adding `Mock-Result` header for request. Code as following:
+
+```
+### get my ip
+//@name myIp
+GET https://httpbin.org/ip
+User-Agent: curl/7.47.0
+Mock-Result: {"origin":"127.0.0.1"}
+```
+
 # Framework Integration
 
 * [tsup](https://tsup.egoist.dev/): `tsup.config.ts` code as following:
