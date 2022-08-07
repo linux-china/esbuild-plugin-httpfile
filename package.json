@@ -3,6 +3,7 @@
   "version": "0.2.1",
   "description": "esbuild plugin for http file",
   "main": "index.js",
+  "type": "module",
   "types": "index.d.ts",
   "scripts": {
     "test": "cd demo; node build.js; node bundle.mjs",
