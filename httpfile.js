@@ -1,5 +1,6 @@
 const LINE_TERMINATOR = "\n";
 
+const MOCKED_HEADER = "Mock-Result";
 
 function jsonStringify(obj) {
     if (obj === null) {
@@ -146,11 +147,30 @@ class HttpTarget {
         }
     }
 
+    /**
+     *
+     * @param {string} methodDeclaration
+     * @returns {string}
+     */
+    toMockCode(methodDeclaration) {
+        let mockedData = this.headers[MOCKED_HEADER].trim();
+        let contentType = this.headers["Accept"] ?? "text/plain";
+        if (mockedData.startsWith("<")) {
+            contentType = "text/html";
+        } else if (mockedData.startsWith("{")) {
+            contentType = "application/json";
+        }
+        return methodDeclaration + " {\n" +
+            "  return new Response(`" + mockedData + "`, { status: 200, headers: { 'Content-Type': '" + contentType + "' } });" +
+            "\n}";
+    }
+
     toCode() {
         let functionParamNames = [];
         if (this.variables.length > 0) {
             functionParamNames.push("params");
         }
+        const mockedRequest = this.headers !== undefined && this.headers[MOCKED_HEADER] !== undefined;
         if (this.method === "GRAPHQL") {
             let headers = this.headers ?? {}
             headers["Content-Type"] = "application/json"
@@ -161,7 +181,11 @@ class HttpTarget {
                 functionParamNames.push("variables");
                 variablesDecl = "variables: {..." + jsonStringify(doc['variables']) + ", ...(variables??{})},";
             }
-            return "export async function " + this.name + "(" + functionParamNames.join(",") + ") {\n" +
+            let methodDeclaration = "export async function " + this.name + "(" + functionParamNames.join(",") + ")";
+            if (mockedRequest) {
+                return this.toMockCode(methodDeclaration);
+            }
+            return methodDeclaration + " {\n" +
                 "    let doc = {" + variablesDecl + " query: `" + query + "`};\n" +
                 "    return await fetch(`" + this.url + "`, {\n" +
                 "        method: 'POST',\n" +
@@ -171,7 +195,11 @@ class HttpTarget {
                 "}";
         } else if (this.method === "POST" || this.method === "GET") {
             if (this.body) {
-                return "export async function " + this.name + "(" + functionParamNames.join(",") + ") {\n" +
+                let methodDeclaration = "export async function " + this.name + "(" + functionParamNames.join(",") + ") ";
+                if (mockedRequest) {
+                    return this.toMockCode(methodDeclaration);
+                }
+                return methodDeclaration + " {\n" +
                     "    return await fetch(`" + this.url + "`, {\n" +
                     "        method: '" + this.method + "',\n" +
                     "        headers: " + jsonStringify(this.headers) + ",\n" +
@@ -179,7 +207,11 @@ class HttpTarget {
                     "    });\n" +
                     "}";
             } else {
-                return "export async function " + this.name + "(" + functionParamNames.join(",") + ") {\n" +
+                let methodDeclaration = "export async function " + this.name + "(" + functionParamNames.join(",") + ") ";
+                if (mockedRequest) {
+                    return this.toMockCode(methodDeclaration);
+                }
+                return methodDeclaration + " {\n" +
                     "    return await fetch(`" + this.url + "`, {\n" +
                     "        method: '" + this.method + "',\n" +
                     "        headers: " + jsonStringify(this.headers) + "\n" +
@@ -238,8 +270,8 @@ export function parseHttpfile(text) {
             && httpTarget.headers === undefined) { // long request url into several lines
             httpTarget.url = httpTarget.url + line.trim();
         } else if (line.indexOf(":") > 0 && httpTarget.body === undefined && httpTarget.script === undefined) { // http headers
-            const parts = line.split(":", 2);
-            httpTarget.addHeader(parts[0].trim(), parts[1].trim());
+            let offset = line.indexOf(":");
+            httpTarget.addHeader(line.slice(0, offset).trim(), line.slice(offset + 1).trim());
         } else if (line.startsWith("<> ")) { //response-ref
 
         } else {
