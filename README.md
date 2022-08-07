@@ -28,7 +28,7 @@ Content-Type: application/json
 * Add `esbuild-plugin-httpfile` to your project's `package.json` or `npm add -D esbuild-plugin-httpfile`.
 
 ```
- "dependencies": {
+ "devDependencies": {
     "esbuild-plugin-httpfile": "^0.2.0"
   }
 ```
