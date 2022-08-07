@@ -1,6 +1,6 @@
 esbuild-plugin-httpfile
 ==================================
-An esbuild plugin for [httpfile](https://www.jetbrains.com/help/idea/http-client-in-product-code-editor.html) to generate JavaScript stub code for HTTP Request/GraphQL request.
+An esbuild plugin for [httpfile](https://www.jetbrains.com/help/idea/http-client-in-product-code-editor.html) to import httpfile for for HTTP Request/GraphQL request.
 
 # How to use?
 
