@@ -1,6 +1,6 @@
 {
   "name": "esbuild-plugin-httpfile",
-  "version": "0.3.2",
+  "version": "0.3.3",
   "description": "esbuild plugin for http file",
   "main": "index.js",
   "type": "module",
