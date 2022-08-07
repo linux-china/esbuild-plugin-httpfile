@@ -1,7 +1,5 @@
 const LINE_TERMINATOR = "\n";
 
-const MOCKED_HEADER = "Mock-Result";
-
 function jsonStringify(obj) {
     if (obj === null) {
         return "{}";
@@ -25,10 +23,16 @@ class HttpTarget {
         this.bodyLines = undefined;
         this.script = undefined;
         this.variables = [];
+        this.mockResult = undefined;
     }
 
     isEmpty() {
         return this.method === "" && this.url === "";
+    }
+
+    isMocked() {
+        // don't mock if production environment
+        return this.mockResult !== undefined && process.env.NODE_ENV !== "production";
     }
 
     clean() {
@@ -43,6 +47,11 @@ class HttpTarget {
             this.name = "http" + this.index;
         } else {
             this.name = this.name.replaceAll("-", "");
+        }
+        let mockLines = this.tags.filter(t => t.startsWith("mock "))
+            .map(t => t.substring(5).trim());
+        if (mockLines.length > 0) {
+            this.mockResult = mockLines.join(LINE_TERMINATOR);
         }
     }
 
@@ -153,8 +162,8 @@ class HttpTarget {
      * @returns {string}
      */
     toMockCode(methodDeclaration) {
-        let mockedData = this.headers[MOCKED_HEADER].trim();
         let contentType = this.headers["Accept"] ?? "text/plain";
+        let mockedData = this.mockResult;
         if (mockedData.startsWith("<")) {
             contentType = "text/html";
         } else if (mockedData.startsWith("{")) {
@@ -170,7 +179,7 @@ class HttpTarget {
         if (this.variables.length > 0) {
             functionParamNames.push("params");
         }
-        const mockedRequest = this.headers !== undefined && this.headers[MOCKED_HEADER] !== undefined;
+        const mockedRequest = this.isMocked();
         if (this.method === "GRAPHQL") {
             let headers = this.headers ?? {}
             headers["Content-Type"] = "application/json"
