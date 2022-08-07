@@ -1,5 +1,5 @@
-const fs = require('fs');
-const {parseHttpfile} = require('../httpfile');
+import fs from 'fs';
+import {parseHttpfile} from '../httpfile.js';
 
 function testParse() {
     const httpfile_text = fs.readFileSync('demo/demo.http', 'utf8');
