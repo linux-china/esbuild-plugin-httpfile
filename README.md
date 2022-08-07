@@ -65,15 +65,27 @@ esbuild.build({
 
 # Mock Support
 
-You can mock request adding `Mock-Result` header for request. Code as following:
+You can mock request by adding `//@mock ` tag for request. Code as following:
 
 ```
 ### get my ip
 //@name myIp
+//@mock {"origin":"127.0.0.1"}
 GET https://httpbin.org/ip
-User-Agent: curl/7.47.0
-Mock-Result: {"origin":"127.0.0.1"}
 ```
+
+For multi lines data, please add more `//@mock ` lines.
+
+```
+### get csv data
+//@name myData
+//@mock name,gender
+//@mock linux_china,M
+GET https://your_service/data
+Accept: text/csv
+```
+
+**Note**: if `process.env.NODE_ENV` is `production`, then mock data will not be used.
 
 # Framework Integration
 
