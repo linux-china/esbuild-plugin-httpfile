@@ -18,6 +18,9 @@
   "dependencies": {
     "esbuild": "^0.14.53"
   },
+  "engines": {
+    "node": ">=18.0.0"
+  },
   "volta": {
     "node": "18.7.0"
   }
