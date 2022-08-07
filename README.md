@@ -47,14 +47,13 @@ console.log(await response.json());
 `build.js` as following:
 
 ```javascript
-const esbuild = require('esbuild');
-
-const httpfilePlugin = require('esbuild-plugin-httpfile');
+import esbuild from 'esbuild';
+import httpfilePlugin from 'esbuild-plugin-httpfile';
 
 esbuild.build({
     bundle: true,
     entryPoints: ['hello.mjs'],
-    plugins: [httpfilePlugin],
+    plugins: [httpfilePlugin(true)],
     platform: 'node',
     format: "esm",
     write: true,
