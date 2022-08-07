@@ -195,7 +195,7 @@ class HttpTarget {
  * @param text http file content
  * @returns {*[HttpTarget]}
  */
-function parseHttpfile(text) {
+export function parseHttpfile(text) {
     const targets = [];
     let index = 1;
     let httpTarget = new HttpTarget(index);
@@ -270,6 +270,4 @@ function parseHttpfile(text) {
     }
     return targets;
 }
-
-module.exports = {parseHttpfile};
 

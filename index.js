@@ -1,8 +1,9 @@
-const {resolve, basename} = require('path');
-const fs = require('fs');
-const {parseHttpfile} = require('./httpfile')
+import {resolve, basename} from 'node:path';
+import fs from 'fs';
+import {parseHttpfile} from './httpfile.js';
 
 const name = 'httpfile'
+
 let loggingVerbose = false;
 
 const setup = ({onResolve, onLoad}) => {
@@ -47,11 +48,9 @@ const buildHttpfileFunctions = async ({path, pluginData}) => {
  * @param {boolean=} verbose - enable verbose logging
  * @returns {{name: string, setup: function}} esbuild plugin object
  */
-function buildHttpFilePlugin(verbose) {
+export default function buildHttpFilePlugin(verbose) {
     if (verbose) {
         loggingVerbose = true;
     }
     return {name, setup};
 }
-
-module.exports = buildHttpFilePlugin
