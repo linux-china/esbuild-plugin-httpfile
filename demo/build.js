@@ -4,8 +4,8 @@ import httpfilePlugin from '../index.js';
 
 esbuild.build({
     bundle: true,
-    entryPoints: ['hello.mjs'],
-    plugins: [httpfilePlugin(true)],
+    entryPoints: ['hello-http.ts'],
+    plugins: [httpfilePlugin(false)],
     platform: 'node',
     format: "esm",
     write: true,
