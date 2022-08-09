@@ -109,4 +109,4 @@ export default defineConfig({
 * JetBrains HTTP Client: https://www.jetbrains.com/help/idea/http-client-in-product-code-editor.html
 * servicex: https://servicex.sh/
 * esbuild: [https://esbuild.github.io/](https://esbuild.github.io/)
-* rollup-plugin-httpfile: Rollup.js plugin for httpfile - https://github.com/linux-china/rollup-plugin-httpfile
+* rollup-plugin-httpfile: Rollup.js plugin for httpfile - https://github.com/servicex-sh/rollup-plugin-httpfile
