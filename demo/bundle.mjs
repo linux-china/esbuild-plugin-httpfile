@@ -6,13 +6,13 @@ async function myIp() {
   });
 }
 async function postTest(params) {
-  return await fetch(`https://${params.host}/post`, {
+  return await fetch(`https://${params.host || ""}/post`, {
     method: "POST",
     headers: { "User-Agent": "curl/7.47.0", "Content-Type": "application/json" },
     body: `{
-  "name": "${params.nick}",
+  "name": "${params.nick || ""}",
   "age": 42,
-  "uuid": "${params.uuid}",
+  "uuid": "${params.uuid || ""}",
   "demo": "hi\` morning"
 }`
   });
@@ -39,7 +39,7 @@ async function graphqlDemo(variables) {
   });
 }
 
-// hello.mjs
+// hello-http.ts
 console.log("==============================================================");
 var response = await myIp();
 console.log(await response.json());
@@ -50,5 +50,5 @@ console.log("==============================================================");
 response = await graphqlSimple();
 console.log(await response.json());
 console.log("==============================================================");
-response = await graphqlDemo({ id: 2 });
+response = await graphqlDemo({ id: "2" });
 console.log(await response.json());
