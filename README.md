@@ -110,3 +110,4 @@ export default defineConfig({
 * servicex: https://servicex.sh/
 * esbuild: [https://esbuild.github.io/](https://esbuild.github.io/)
 * rollup-plugin-httpfile: Rollup.js plugin for httpfile - https://github.com/servicex-sh/rollup-plugin-httpfile
+* vite-plugin-httpfile: https://github.com/servicex-sh/vite-plugin-httpfile
