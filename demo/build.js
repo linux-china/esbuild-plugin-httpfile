@@ -1,6 +1,6 @@
-import esbuild from 'esbuild';
+const esbuild = require('esbuild');
 
-import httpfilePlugin from '../index.js';
+const httpfilePlugin = require('../index');
 
 esbuild.build({
     bundle: true,
