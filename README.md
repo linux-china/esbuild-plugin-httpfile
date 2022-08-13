@@ -87,6 +87,22 @@ Accept: text/csv
 
 **Note**: if `process.env.NODE_ENV` is `production`, then mock data will not be used.
 
+# GraphQ over HTTP support
+
+Create GraphQL request in http file, code as following:
+
+```
+### graphql test
+//@name graphqlTest
+GRAPHQL https://localhost:8787/graphql
+
+query {
+   welcome(name : "{{nick}}" )
+}
+```
+
+Then call `let response = await graphqlTest({nick:'your_nick'})` just like normal HTTP request.
+
 # Framework Integration
 
 * [tsup](https://tsup.egoist.dev/): `tsup.config.ts` code as following:
