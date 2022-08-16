@@ -1,10 +1,10 @@
 ### get my ip
-//@name myIp
+//@name my-ip
 GET https://httpbin.org/ip
 User-Agent: curl/7.47.0
 
 ### post test
-//@name postTest
+//@name post-test
 POST https://{{host}}/post
 User-Agent: curl/7.47.0
 Content-Type: application/json
