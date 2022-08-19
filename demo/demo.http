@@ -26,13 +26,12 @@ query {
 
 ### GraphQL demo with variables
 //@name graphqlDemo
-GRAPHQL https://httpbin.org/post
+GRAPHQL https://localhost:8080/graphql
 
-query {
-    ip
+query demo($nick: String!) {
+   welcome(name : $nick )
 }
 
 {
-  "id": 1,
-  "name": "hi` morning"
+  "nick": "{{nick}}"
 }
